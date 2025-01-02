@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.green.danyeoall.feed.FeedMapper">
+    <select id="selFeedListMain">
+        SELECT A.plan_master_id AS planMasterId, A.title, A.created_at AS createdAt
+             , C.city_pic, C.color, C.city_kor_name AS cityName
+             , COUNT(D.user_id) AS likeCnt
+          FROM feed A
+         INNER JOIN plan_master B
+            ON A.plan_master_id = B.plan_master_id
+         INNER JOIN city C
+            ON B.city_id = C.city_id
+          LEFT JOIN feed_like D
+            ON A.plan_master_id = D.plan_master_id
+         GROUP BY A.plan_master_id
+         ORDER BY COUNT(D.user_id) DESC
+         LIMIT 4
+    </select>
+
+    <select id="selFeedList">
+        SELECT A.plan_master_id AS planMasterId, A.title, A.created_at AS createdAt
+             , C.city_pic, C.color, C.city_kor_name AS cityName
+             , COUNT(D.user_id) AS likeCnt
+          FROM feed A
+          LEFT JOIN plan_master B
+            ON A.plan_master_id = B.plan_master_id
+          LEFT JOIN city C
+            ON B.city_id = C.city_id
+          LEFT JOIN feed_like D
+            ON A.plan_master_id = D.plan_master_id
+         GROUP BY A.plan_master_id
+         ORDER BY COUNT(D.user_id) DESC
+         LIMIT #{startIdx}, #{size}
+    </select>
+    
+    <select id="selFeedDetail">
+        SELECT A.title, A.content
+             , B.start_date AS startDate, B.end_date AS endDate, B.people_cnt AS peopleCnt
+             , C.city_kor_name AS cityName, C.color
+             , D.place_id AS placeId, D.price, D.memo, D.start_time AS startTime
+             , D.end_time AS endTime, D.`date`
+          FROM feed A
+         INNER JOIN plan_master B
+            ON A.plan_master_id = B.plan_master_id
+         INNER JOIN city C
+            ON B.city_id = C.city_id
+         INNER JOIN plan_detail D
+            ON B.plan_master_id = D.plan_master_id
+         WHERE B.user_id = #{userId}
+           AND B.plan_master_id = #{planMasterId}
+    </select>
+
+    <insert id="insFeed">
+        INSERT INTO feed
+           SET plan_master_id = #{planMasterId}
+             , title = #{title}
+             , content = #{content}
+             , location = #{location}
+    </insert>
+    
+    <update id="updFeed">
+        UPDATE feed A
+         INNER JOIN plan_master B
+            ON A.plan_master_id = B.plan_master_id
+        <set>
+            <if test=" title != null and title != '' ">
+                A.title = #{title}
+            </if>
+            <if test=" content != null and content != '' ">
+                , A.content = #{content}
+            </if>
+        </set>
+         WHERE A.plan_master_id = #{planMasterId}
+           AND B.user_id = #{userId}
+    </update>
+
+    <delete id="delFeed">
+        DELETE FROM feed
+         WHERE plan_master_id = #{planMasterId}
+    </delete>
+</mapper>

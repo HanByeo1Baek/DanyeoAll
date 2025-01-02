@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.green.danyeoall.user.UserMapper">
+
+    <insert id="insUser" useGeneratedKeys="true" keyProperty="userId">
+<!--    INSERT INTO user SET uid = #{uid}, upw = #{upw}, pic = #{pic}, nick_name = #{nickName}-->
+        INSERT INTO user (
+              upw
+            , email
+            , nick_name
+        ) VALUES (
+              #{upw}
+            , #{email}
+            , #{nickName}
+        )
+    </insert>
+
+    <select id="postSignIn">
+        SELECT user_id AS userId
+             , upw
+             , IFNULL(nick_name, email) AS nickName
+             , email
+          FROM user
+         WHERE email = #{email}
+    </select>
+
+    <update id="updUserNickName">
+        UPDATE user
+           SET nick_name = #{nickName}
+         WHERE user_id = #{userId}
+    </update>
+
+    <update id="updUserPassword">
+        UPDATE user
+           SET upw = #{newUpw}
+         WHERE user_id = #{userId}
+    </update>
+
+</mapper>

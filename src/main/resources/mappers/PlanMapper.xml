@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.green.danyeoall.plan.PlanMapper">
+
+    <insert id="insPlan" useGeneratedKeys="true" keyProperty="planMasterId">
+        INSERT INTO plan_master
+        SET user_id = #{userId}
+        , city_id = #{cityId}
+        , start_date = #{startDate}
+        , end_date = #{endDate}
+        , people_cnt = #{peopleCnt}
+        , plan_date = DATEDIFF(end_date, start_date)
+    </insert>
+
+    <insert id="insPlanDetail">
+        INSERT INTO plan_detail
+        SET plan_master_id = #{planMasterId}
+        , place_id = #{placeId}
+        , price = #{price}
+        , memo = #{memo}
+        , start_time = #{startTime}
+        , end_time = #{endTime}
+        , `date` = #{date}
+    </insert>
+
+    <select id="selPlanList">
+        SELECT A.start_date AS startDate, A.end_date AS endDate, A.people_cnt AS peopleCnt
+        , B.place_id AS placeId, B.price, B.memo, B.start_time AS startTime
+        , B.end_time AS endTime, B.`date`
+        FROM plan_master A
+        INNER JOIN plan_detail B
+        ON A.plan_master_id = B.plan_master_id
+        WHERE A.user_id = #{signedUserId}
+        AND A.plan_master_id = #{planMasterId}
+    </select>
+
+    <update id="updPlan">
+        UPDATE plan_detail
+        <set>
+            <if test=" price != null and price != '' ">
+                price = #{price}
+            </if>
+            <if test=" memo != null and memo != '' ">
+                ,memo = #{memo}
+            </if>
+            <if test=" startTime != null and startTime != '' ">
+                ,start_time = #{startTime}
+            </if>
+            <if test=" endTime != null and endTime != '' " >
+                ,end_time = #{endTime}
+            </if>
+            <if test=" date != null and date != '' " >
+                ,date = #{date}
+            </if>
+        </set>
+        WHERE plan_id = #{planId}
+        AND place_id = #{placeId}
+    </update>
+
+    <delete id="delPlan">
+        DELETE FROM plan_master
+        WHERE plan_master_id = #{planMasterId}
+        AND user_id = #{signedUserId}
+    </delete>
+</mapper>

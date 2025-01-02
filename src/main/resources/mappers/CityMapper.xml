@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.green.danyeoall.city.CityMapper">
+    <insert id="insSight">
+        INSERT INTO city_place
+        SET  lat = #{lat}
+        , lng = #{lng}
+        , place_address = #{placeAddress}
+        , place_name = #{placeName}
+        , category = #{category}
+        , city_id = #{cityId}
+    </insert>
+    <select id="selCity">
+        SELECT city_id AS cityId
+             , city_kor_name AS cityKorName
+             , city_eng_name AS cityEngName
+             , city_pic AS cityPic
+        FROM city
+    </select>
+    <select id="selSightList">
+        SELECT place_id AS placeId
+             , place_name AS placeName
+             , place_pic AS placePic
+             , place_address AS placeAddress
+             , place_star AS placeStar
+             , place_comment AS placeComment
+        FROM city_place
+        WHERE city_id = #{cityId}
+        AND category = #{category}
+    </select>
+</mapper>
