@@ -37,5 +37,9 @@
            SET upw = #{newUpw}
          WHERE user_id = #{userId}
     </update>
-
+    <select id="getUpwByUserId">
+        select upw
+        from user
+        where user_id = #{userId}
+    </select>
 </mapper>

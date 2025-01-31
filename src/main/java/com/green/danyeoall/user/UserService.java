@@ -47,7 +47,7 @@ public class UserService {
     }
 
     public int patchUserPassword(UserUpdPasswordReq p) {
-        UserSignInRes res = userMapper.postSignIn(p.getEmail());
+        UserSignInRes res = userMapper.getUpwByUserId(p.getUserId());
         log.info("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh{}", p);
         log.info("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh{}", res);
         if( !BCrypt.checkpw(p.getUpw(), res.getUpw()) ) {

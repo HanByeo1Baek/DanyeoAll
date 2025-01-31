@@ -10,6 +10,7 @@ import org.apache.ibatis.annotations.Mapper;
 public interface UserMapper {
     int insUser(UserSignUpReq p);
     UserSignInRes postSignIn(String uid);
+    UserSignInRes getUpwByUserId(long userId);
     int updUserNickName(UserUpdNickNameReq p);
     int updUserPassword(UserUpdPasswordReq p);
 }
